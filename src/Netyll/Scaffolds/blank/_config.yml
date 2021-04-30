@@ -1,0 +1,4 @@
+﻿title: "Sample Netyll Website"
+tagline: "This is a sample Netyll website based on the default empty theme"
+url: "http://localhost"
+exclude: [.scss, README.md]

@@ -6,7 +6,20 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Scaffolds\blank\index.html" />
+    <None Remove="Scaffolds\blank\_layouts\default.html" />
+    <None Remove="Scaffolds\_config.yml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Scaffolds\blank\index.html" />
+    <EmbeddedResource Include="Scaffolds\blank\_config.yml" />
+    <EmbeddedResource Include="Scaffolds\blank\_layouts\default.html" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.CommandLineUtils" Version="1.1.1" />
+    <PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="3.1.14" />
   </ItemGroup>
 
 </Project>
