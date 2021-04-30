@@ -4,7 +4,12 @@ using System.Text;
 
 namespace Netyll.Commands
 {
-    class ServeCommand
+    public class ServeCommand : BaseCommand
     {
+        public override int Run()
+        {
+            Console.WriteLine($"{nameof(ServeCommand)}.{nameof(Run)}");
+            return 0;
+        }
     }
 }

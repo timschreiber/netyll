@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Netyll": {
+      "commandName": "Project",
+      "commandLineArgs": "build -h"
+    }
+  }
+}

@@ -4,7 +4,12 @@ using System.Text;
 
 namespace Netyll.Commands
 {
-    class BuildCommand
+    public class BuildCommand : BaseCommand
     {
+        public override int Run()
+        {
+            Console.WriteLine($"{nameof(BuildCommand)}.{nameof(Run)}");
+            return 0;
+        }
     }
 }
