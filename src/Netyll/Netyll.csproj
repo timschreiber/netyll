@@ -18,8 +18,28 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="CsvHelper" Version="27.0.2" />
+    <PackageReference Include="DotLiquid" Version="2.1.436" />
+    <PackageReference Include="Markdig" Version="0.24.0" />
     <PackageReference Include="Microsoft.Extensions.CommandLineUtils" Version="1.1.1" />
     <PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="3.1.14" />
+    <PackageReference Include="System.Composition.AttributedModel" Version="5.0.1" />
+    <PackageReference Include="System.IO.Abstractions" Version="13.2.29" />
+    <PackageReference Include="YamlDotNet" Version="11.1.1" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="3.1.11" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="3.1.11" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="3.1.11" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.1.11" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Logic\Hosting\" />
+    <Folder Include="Logic\Import\" />
+    <Folder Include="Logic\Minification\" />
+    <Folder Include="Logic\Modules\" />
+    <Folder Include="Logic\Resources\" />
+    <Folder Include="Logic\Recipes\" />
+    <Folder Include="Logic\Properties\" />
   </ItemGroup>
 
 </Project>

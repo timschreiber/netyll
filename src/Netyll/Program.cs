@@ -1,51 +1,68 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Text;
 using Microsoft.Extensions.CommandLineUtils;
-using Netyll.Commands;
+using Microsoft.Extensions.DependencyInjection;
+using Netyll.Logic.Commands;
 
 namespace Netyll
 {
     public class Program
     {
+        static IServiceProvider _serviceProvider;
+
+        static Program()
+        {
+            var services = new ServiceCollection();
+            services.AddTransient<NewCommand>();
+            services.AddTransient<BuildCommand>();
+            services.AddTransient<ServeCommand>();
+            services.AddTransient<CleanCommand>();
+            _serviceProvider = services.BuildServiceProvider();
+        }
+
         public static void Main(string[] args)
         {
             var app = new CommandLineApplication(throwOnUnexpectedArg: false)
             {
                 Name = "Netyll.exe",
                 FullName = "Netyll",
-                Description = "A simple, Jekyll compatible static site generation tool for .NET Developers and Windows users."
+                Description = "A simple, Jekyll-compatible static site generation tool for .NET Developers and Windows users."
             };
 
             app.HelpOption("-?|-h|--help");
 
             app.Command("new", cmd =>
             {
-                cmd.Description = "Creates a new blank Jekyll site scaffold at current path.";
+                cmd.Description = "Creates a new blank Netyll site scaffold at current path.";
                 cmd.HelpOption("-?|-h|--help");
-                cmd.OnExecute(new NewCommand().Run);
+                cmd.OnExecute(_serviceProvider.GetService<NewCommand>().Run);
             });
 
             app.Command("build", cmd =>
             {
                 cmd.Description = "Performs a one off build your site to ./_site (by default).";
+                var includeDraftsOption = cmd.Option("--include-drafts", "Include draft pages and posts when building the site.", CommandOptionType.NoValue);
+                var cleanTargetOption = cmd.Option("--clean-target", "Clean the destination directory before building the site.", CommandOptionType.NoValue);
                 cmd.HelpOption("-?|-h|--help");
-                cmd.OnExecute(new BuildCommand().Run);
+                cmd.OnExecute(() =>
+                {
+                    var includeDrafts = includeDraftsOption != null && includeDraftsOption.HasValue();
+                    var cleanTarget = cleanTargetOption != null && cleanTargetOption.HasValue();
+                    return _serviceProvider.GetService<BuildCommand>().Run(includeDrafts, cleanTarget);
+                });
             });
 
             app.Command("serve", cmd =>
             {
                 cmd.Description = "Builds your site any time a source file changes and serves it locally.";
                 cmd.HelpOption("-?|-h|--help");
-                cmd.OnExecute(new ServeCommand().Run);
+                cmd.OnExecute(_serviceProvider.GetService<ServeCommand>().Run);
             });
 
             app.Command("clean", cmd =>
             {
                 cmd.Description = "Removes all generated files: destination folder, metadata file, Sass and Netyll caches.";
                 cmd.HelpOption("-?|-h|--help");
-                cmd.OnExecute(new CleanCommand().Run);
+                cmd.OnExecute(_serviceProvider.GetService<CleanCommand>().Run);
             });
 
             app.OnExecute(() =>
