@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -6,15 +6,39 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Scaffolds\blank\index.html" />
-    <None Remove="Scaffolds\blank\_layouts\default.html" />
-    <None Remove="Scaffolds\_config.yml" />
+    <None Remove="Resources\25.png" />
+    <None Remove="Resources\about.md" />
+    <None Remove="Resources\atom.xml" />
+    <None Remove="Resources\css\style.css" />
+    <None Remove="Resources\favicon.ico" />
+    <None Remove="Resources\favicon.png" />
+    <None Remove="Resources\index.html" />
+    <None Remove="Resources\logo.png" />
+    <None Remove="Resources\rss.xml" />
+    <None Remove="Resources\sitemap.xml" />
+    <None Remove="Resources\_config.yml" />
+    <None Remove="Resources\_includes\head.html" />
+    <None Remove="Resources\_layouts\layout.html" />
+    <None Remove="Resources\_layouts\post.html" />
+    <None Remove="Resources\_posts\myfirstpost.md" />
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Scaffolds\blank\index.html" />
-    <EmbeddedResource Include="Scaffolds\blank\_config.yml" />
-    <EmbeddedResource Include="Scaffolds\blank\_layouts\default.html" />
+    <EmbeddedResource Include="Resources\25.png" />
+    <EmbeddedResource Include="Resources\about.md" />
+    <EmbeddedResource Include="Resources\atom.xml" />
+    <EmbeddedResource Include="Resources\css\style.css" />
+    <EmbeddedResource Include="Resources\favicon.ico" />
+    <EmbeddedResource Include="Resources\favicon.png" />
+    <EmbeddedResource Include="Resources\index.html" />
+    <EmbeddedResource Include="Resources\logo.png" />
+    <EmbeddedResource Include="Resources\rss.xml" />
+    <EmbeddedResource Include="Resources\sitemap.xml" />
+    <EmbeddedResource Include="Resources\_config.yml" />
+    <EmbeddedResource Include="Resources\_includes\head.html" />
+    <EmbeddedResource Include="Resources\_layouts\layout.html" />
+    <EmbeddedResource Include="Resources\_layouts\post.html" />
+    <EmbeddedResource Include="Resources\_posts\myfirstpost.md" />
   </ItemGroup>
 
   <ItemGroup>

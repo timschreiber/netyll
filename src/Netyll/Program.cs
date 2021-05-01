@@ -1,7 +1,10 @@
 ﻿using System;
+using System.IO.Abstractions;
 using Microsoft.Extensions.CommandLineUtils;
 using Microsoft.Extensions.DependencyInjection;
 using Netyll.Logic.Commands;
+using Netyll.Logic.Templating.Context;
+using Netyll.Logic.Templating.Engines;
 
 namespace Netyll
 {
@@ -16,6 +19,11 @@ namespace Netyll
             services.AddTransient<BuildCommand>();
             services.AddTransient<ServeCommand>();
             services.AddTransient<CleanCommand>();
+            services.AddTransient<IFileSystem, FileSystem>();
+            services.AddTransient<ISiteEngine, LiquidEngine>();
+            services.AddTransient<SiteContextGenerator>();
+            services.AddTransient<LinkHelper>();
+            services.AddTransient<Logic.IConfiguration, Logic.Configuration>();
             _serviceProvider = services.BuildServiceProvider();
         }
 
