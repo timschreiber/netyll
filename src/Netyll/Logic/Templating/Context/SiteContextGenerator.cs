@@ -23,8 +23,8 @@ namespace Netyll.Logic.Templating.Context
 
         public SiteContextGenerator(IFileSystem fileSystem, LinkHelper linkHelper, IConfiguration config)
         {
-            this._fileSystem = fileSystem;
-            this._linkHelper = linkHelper;
+            _fileSystem = fileSystem;
+            _linkHelper = linkHelper;
             _config = config;
 
             if (_config.ContainsKey("include"))
@@ -41,6 +41,8 @@ namespace Netyll.Logic.Templating.Context
         {
             try
             {
+                _config.ReadFromFile(sourcePath);
+
                 var context = new SiteContext
                 {
                     SourceFolder = sourcePath,
@@ -278,7 +280,7 @@ namespace Netyll.Logic.Templating.Context
 
                 return page;
             }
-            catch (Exception e)
+            catch// (Exception e)
             {
                 // Log Exception Serilog?
             }

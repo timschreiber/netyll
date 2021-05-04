@@ -2,6 +2,7 @@
 using Netyll.Logic.Templating.Context;
 using Netyll.Logic.Templating.Engines;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.IO.Abstractions;
@@ -10,6 +11,9 @@ namespace Netyll.Logic.Commands
 {
     public class BuildCommand
     {
+        private static readonly string DEFAULT_SOURCE_PATH = Environment.CurrentDirectory;
+        private static readonly string DEFAULT_DESTINATION_PATH = Path.Combine(Environment.CurrentDirectory, "_site");
+
         private readonly IFileSystem _fileSystem;
         private readonly ISiteEngine _engine;
         private readonly SiteContextGenerator _generator;
@@ -19,14 +23,16 @@ namespace Netyll.Logic.Commands
             _fileSystem = fileSystem;
             _engine = siteEngine;
             _generator = generator;
-            SourcePath = _fileSystem.DirectoryInfo.FromDirectoryName(Environment.CurrentDirectory);
-            DestinationPath = _fileSystem.DirectoryInfo.FromDirectoryName(Path.Combine(Environment.CurrentDirectory, "_site"));
+            SourcePath = _fileSystem.DirectoryInfo.FromDirectoryName(DEFAULT_SOURCE_PATH);
+            DestinationPath = _fileSystem.DirectoryInfo.FromDirectoryName(DEFAULT_DESTINATION_PATH);
         }
 
         public IDirectoryInfo SourcePath { get; set; }
         public IDirectoryInfo DestinationPath { get; set; }
         public bool IncludeDrafts { get; set; } = false;
         public bool CleanDestination { get; set; } = true;
+        
+        //public IEnumerable<ITransform> Transforms { get; set; }
 
         public int Run()
         {

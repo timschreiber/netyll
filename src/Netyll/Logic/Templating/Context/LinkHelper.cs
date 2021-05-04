@@ -48,7 +48,11 @@ namespace Netyll.Logic.Templating.Context
             permalink = permalink.Replace(":short_year", page.Date.ToString("yy"));
             permalink = permalink.Replace(":i_month", page.Date.Month.ToString());
             permalink = permalink.Replace(":i_day", page.Date.Day.ToString());
-            permalink = permalink.Replace(":slug", SlugifyFilter.Slugify(GetSlugFromFrontMatter(page) ?? GetTitle(page.File)));
+
+            var qq = getSlugFromFrontMatter(page);
+            var ww = GetTitle(page.File);
+
+            permalink = permalink.Replace(":slug", SlugifyFilter.Slugify(qq ?? ww));
 
             if (permalink.Contains(":category"))
             {
@@ -112,7 +116,7 @@ namespace Netyll.Logic.Templating.Context
 
         private string GetPageTitle(string file) => Path.GetFileNameWithoutExtension(file);
 
-        private string GetSlugFromFrontMatter(Page page)
+        private string getSlugFromFrontMatter(Page page)
         {
             object slug;
             page.Bag.TryGetValue("slug", out slug);

@@ -19,13 +19,13 @@ namespace Netyll.Logic
 
         IDefaultsConfiguration Defaults { get; }
 
-        void ReadFromFile(string path);
+        void ReadFromFile(IDirectoryInfo path);
     }
 
     internal sealed class Configuration : IConfiguration
     {
-        private const string ConfigFileName = "_config.yml";
-        public const string DefaultPermalink = "date";
+        private const string CONFIG_FILENAME = "_config.yml";
+        public const string DEFAULT_PERMALINK = "date";
 
         private IDictionary<string, object> _config;
         private readonly IFileSystem _fileSystem;
@@ -49,15 +49,15 @@ namespace Netyll.Logic
         {
             if (!_config.ContainsKey("permalink"))
             {
-                _config.Add("permalink", DefaultPermalink);
+                _config.Add("permalink", DEFAULT_PERMALINK);
             }
 
             Defaults = new DefaultsConfiguration(_config);
         }
 
-        public void ReadFromFile(string path)
+        public void ReadFromFile(IDirectoryInfo path)
         {
-            var configFilePath = _fileSystem.Path.Combine(path, ConfigFileName);
+            var configFilePath = _fileSystem.Path.Combine(path.FullName, CONFIG_FILENAME);
             _config = new Dictionary<string, object>();
             if (_fileSystem.File.Exists(configFilePath))
             {
