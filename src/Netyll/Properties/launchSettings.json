@@ -2,7 +2,7 @@
   "profiles": {
     "Netyll": {
       "commandName": "Project",
-      "commandLineArgs": "new"
+      "commandLineArgs": "build --source-path C:\\temp\\netyll --clean-target"
     }
   }
 }

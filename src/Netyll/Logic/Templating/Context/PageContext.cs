@@ -1,6 +1,7 @@
 ﻿using Netyll.Logic.Extensions;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Abstractions;
 
 namespace Netyll.Logic.Templating.Context
 {
@@ -61,13 +62,13 @@ namespace Netyll.Logic.Templating.Context
 
         public string FullContent { get; set; }
 
-        public static PageContext FromPage(SiteContext siteContext, Page page, string outputPath, string defaultOutputPath)
+        public static PageContext FromPage(SiteContext siteContext, Page page, IDirectoryInfo outputPath, string defaultOutputPath)
         {
             var context = new PageContext(siteContext, page);
 
             if (page.Bag.ContainsKey("permalink") || siteContext.Config.ContainsKey("permalink"))
             {
-                context.OutputPath = Path.Combine(outputPath, page.Url.ToRelativeFile());
+                context.OutputPath = Path.Combine(outputPath.FullName, page.Url.ToRelativeFile());
             }
             else
             {

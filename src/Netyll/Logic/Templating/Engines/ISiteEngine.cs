@@ -6,8 +6,6 @@ namespace Netyll.Logic.Templating.Engines
     {
         void Initialize();
 
-        bool CanProcess(SiteContext context);
-
         void Process(SiteContext context, bool skipFileOnError = false);
     }
 }

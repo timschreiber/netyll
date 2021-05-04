@@ -2,6 +2,7 @@
 using System;
 using System.IO;
 using System.IO.Abstractions;
+using System.Linq;
 using System.Reflection;
 
 namespace Netyll.Logic.Commands
@@ -15,54 +16,68 @@ namespace Netyll.Logic.Commands
         {
             _fileSystem = fileSystem;
             _embeddedFileProvider = new EmbeddedFileProvider(Assembly.GetExecutingAssembly());
+            BasePath = _fileSystem.DirectoryInfo.FromDirectoryName(Environment.CurrentDirectory);
         }
+
+        public IDirectoryInfo BasePath { get; set; }
 
         public int Run()
         {
-            var includesPath = Path.Combine(Environment.CurrentDirectory, "_includes");
-            if (!_fileSystem.Directory.Exists(includesPath))
-                _fileSystem.Directory.CreateDirectory(includesPath);
+            createDirectoryIfNotExists(BasePath);
+            createDirectoryIfNotExists(BasePath, "_includes");
+            createDirectoryIfNotExists(BasePath, "_layouts");
+            createDirectoryIfNotExists(BasePath, "_posts");
+            createDirectoryIfNotExists(BasePath, "_data");
+            createDirectoryIfNotExists(BasePath, "css");
 
-            var layoutsPath = Path.Combine(Environment.CurrentDirectory, "_layouts");
-            if (!_fileSystem.Directory.Exists(layoutsPath))
-                _fileSystem.Directory.CreateDirectory(layoutsPath);
-
-            var postsPath = Path.Combine(Environment.CurrentDirectory, "_posts");
-            if (!_fileSystem.Directory.Exists(postsPath))
-                _fileSystem.Directory.CreateDirectory(postsPath);
-
-            var cssPath = Path.Combine(Environment.CurrentDirectory, "css");
-            if (!_fileSystem.Directory.Exists(cssPath))
-                _fileSystem.Directory.CreateDirectory(cssPath);
-
-            copyResource("Resources/_includes/head.html", Path.Combine(includesPath, "head.html"));
-            copyResource("Resources/_layouts/layout.html", Path.Combine(layoutsPath, "layout.html"));
-            copyResource("Resources/_layouts/post.html", Path.Combine(layoutsPath, "post.html"));
-            copyResource("Resources/_posts/myfirstpost.md", Path.Combine(postsPath, $"{DateTime.Today:yyyy-MM-dd}-myfirstpost.md"));
-            copyResource("Resources/css/style.css", Path.Combine(cssPath, "style.css"));
-            copyResource("Resources/_config.yml", Path.Combine(Environment.CurrentDirectory, "_config.yml"));
-            copyResource("Resources/25.png", Path.Combine(Environment.CurrentDirectory, "25.png"));
-            copyResource("Resources/about.md", Path.Combine(Environment.CurrentDirectory, "about.md"));
-            copyResource("Resources/atom.xml", Path.Combine(Environment.CurrentDirectory, "atom.xml"));
-            copyResource("Resources/favicon.ico", Path.Combine(Environment.CurrentDirectory, "favicon.ico"));
-            copyResource("Resources/favicon.png", Path.Combine(Environment.CurrentDirectory, "favicon.png"));
-            copyResource("Resources/index.html", Path.Combine(Environment.CurrentDirectory, "index.html"));
-            copyResource("Resources/logo.png", Path.Combine(Environment.CurrentDirectory, "logo.png"));
-            copyResource("Resources/rss.xml", Path.Combine(Environment.CurrentDirectory, "rss.xml"));
-            copyResource("Resources/sitemap.xml", Path.Combine(Environment.CurrentDirectory, "sitemap.xml"));
+            copyResource("Resources/_includes/head.html", BasePath);
+            copyResource("Resources/_layouts/layout.html", BasePath);
+            copyResource("Resources/_layouts/post.html", BasePath);
+            copyResource("Resources/_posts/myfirstpost.md", BasePath, $"{DateTime.Today:yyyy-MM-dd}-myfirstpost.md");
+            copyResource("Resources/css/style.css", BasePath);
+            copyResource("Resources/_config.yml", BasePath);
+            copyResource("Resources/25.png", BasePath);
+            copyResource("Resources/about.md", BasePath);
+            copyResource("Resources/atom.xml", BasePath);
+            copyResource("Resources/favicon.ico", BasePath);
+            copyResource("Resources/favicon.png", BasePath);
+            copyResource("Resources/index.html", BasePath);
+            copyResource("Resources/logo.png", BasePath);
+            copyResource("Resources/rss.xml", BasePath);
+            copyResource("Resources/sitemap.xml", BasePath);
 
             return 0;
         }
 
-        private void copyResource(string resourceName, string fileName)
+        private void createDirectoryIfNotExists(IDirectoryInfo basePath, string directoryName = null)
         {
-            using (var resourceStream = _embeddedFileProvider.GetFileInfo(resourceName).CreateReadStream())
-            using (var fileStream = File.Create(fileName))
+            var path = string.IsNullOrWhiteSpace(directoryName)
+                ? basePath.FullName
+                : Path.Combine(basePath.FullName, directoryName);
+
+            if (!_fileSystem.Directory.Exists(path))
+                _fileSystem.Directory.CreateDirectory(path);
+        }
+
+        private void copyResource(string resourceName, IDirectoryInfo basePath, string overrideFilename = null)
+        {
+            var pathParts = resourceName.Split("/").Skip(1).ToList();
+            
+            if (!string.IsNullOrWhiteSpace(overrideFilename))
             {
-                resourceStream.CopyTo(fileStream);
-                fileStream.Close();
-                resourceStream.Close();
+                pathParts.Remove(pathParts.Last());
+                pathParts.Add(overrideFilename);
             }
+            
+            pathParts.Insert(0, basePath.FullName);
+
+            var path = Path.Combine(pathParts.ToArray());
+
+            using var resourceStream = _embeddedFileProvider.GetFileInfo(resourceName).CreateReadStream();
+            using var fileStream = File.Create(path);
+            resourceStream.CopyTo(fileStream);
+            fileStream.Close();
+            resourceStream.Close();
         }
     }
 }

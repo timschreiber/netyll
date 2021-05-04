@@ -12,45 +12,45 @@ namespace Netyll.Logic.Templating.Context
 {
     public class SiteContextGenerator
     {
-        private readonly Dictionary<string, Page> pageCache = new Dictionary<string, Page>();
-        private readonly IFileSystem fileSystem;
-        private readonly List<string> includes = new List<string>();
-        private readonly List<string> excludes = new List<string>();
-        private readonly LinkHelper linkHelper;
+        private readonly Dictionary<string, Page> _pageCache = new Dictionary<string, Page>();
+        private readonly IFileSystem _fileSystem;
+        private readonly List<string> _includes = new List<string>();
+        private readonly List<string> _excludes = new List<string>();
+        private readonly LinkHelper _linkHelper;
         private readonly IConfiguration _config;
 
         public IEnumerable<IBeforeProcessingTransform> BeforeProcessingTransforms { get; set; }
 
         public SiteContextGenerator(IFileSystem fileSystem, LinkHelper linkHelper, IConfiguration config)
         {
-            this.fileSystem = fileSystem;
-            this.linkHelper = linkHelper;
+            this._fileSystem = fileSystem;
+            this._linkHelper = linkHelper;
             _config = config;
 
             if (_config.ContainsKey("include"))
             {
-                includes.AddRange((IEnumerable<string>)_config["include"]);
+                _includes.AddRange((IEnumerable<string>)_config["include"]);
             }
             if (_config.ContainsKey("exclude"))
             {
-                excludes.AddRange((IEnumerable<string>)_config["exclude"]);
+                _excludes.AddRange((IEnumerable<string>)_config["exclude"]);
             }
         }
 
-        public SiteContext BuildContext(string path, string destinationPath, bool includeDrafts)
+        public SiteContext BuildContext(IDirectoryInfo sourcePath, IDirectoryInfo destinationPath, bool includeDrafts)
         {
             try
             {
                 var context = new SiteContext
                 {
-                    SourceFolder = path,
+                    SourceFolder = sourcePath,
                     OutputFolder = destinationPath,
                     Posts = new List<Page>(),
                     Pages = new List<Page>(),
                     Config = _config,
                     Time = DateTime.Now,
                     UseDrafts = includeDrafts,
-                    Data = new Data(fileSystem, Path.Combine(path, "_data"))
+                    Data = new Data(_fileSystem, _fileSystem.DirectoryInfo.FromDirectoryName(Path.Combine(sourcePath.FullName, "_data")))
                 };
 
                 context.Posts = BuildPosts(_config, context).OrderByDescending(p => p.Date).ToList();
@@ -70,13 +70,13 @@ namespace Netyll.Logic.Templating.Context
             }
             finally
             {
-                pageCache.Clear();
+                _pageCache.Clear();
             }
         }
 
         private IEnumerable<Page> BuildPages(IConfiguration config, SiteContext context)
         {
-            var files = from file in fileSystem.Directory.GetFiles(context.SourceFolder, "*.*", SearchOption.AllDirectories)
+            var files = from file in _fileSystem.Directory.GetFiles(context.SourceFolder.FullName, "*.*", SearchOption.AllDirectories)
                         let relativePath = MapToOutputPath(context, file)
                         where CanBeIncluded(relativePath)
                         select file;
@@ -88,7 +88,7 @@ namespace Netyll.Logic.Templating.Context
                     yield return new NonProcessedPage
                     {
                         File = file,
-                        Filepath = Path.Combine(context.OutputFolder, MapToOutputPath(context, file))
+                        Filepath = Path.Combine(context.OutputFolder.FullName, MapToOutputPath(context, file))
                     };
                 }
                 else
@@ -104,21 +104,21 @@ namespace Netyll.Logic.Templating.Context
         {
             var posts = new List<Page>();
 
-            var postsFolders = fileSystem.Directory.GetDirectories(context.SourceFolder, "_posts", SearchOption.AllDirectories);
+            var postsFolders = _fileSystem.Directory.GetDirectories(context.SourceFolder.FullName, "_posts", SearchOption.AllDirectories);
 
             foreach (var postsFolder in postsFolders)
             {
-                posts.AddRange(fileSystem.Directory
+                posts.AddRange(_fileSystem.Directory
                     .GetFiles(postsFolder, "*.*", SearchOption.AllDirectories)
                     .Select(file => CreatePage(context, config, file, true))
                     .Where(post => post != null)
                 );
             }
 
-            var draftsFolder = Path.Combine(context.SourceFolder, "_drafts");
-            if (context.UseDrafts && fileSystem.Directory.Exists(draftsFolder))
+            var draftsFolder = Path.Combine(context.SourceFolder.FullName, "_drafts");
+            if (context.UseDrafts && _fileSystem.Directory.Exists(draftsFolder))
             {
-                posts.AddRange(fileSystem.Directory
+                posts.AddRange(_fileSystem.Directory
                     .GetFiles(draftsFolder, "*.*", SearchOption.AllDirectories)
                     .Select(file => CreatePage(context, config, file, true))
                     .Where(post => post != null)
@@ -184,22 +184,22 @@ namespace Netyll.Logic.Templating.Context
 
         public bool IsExcludedPath(string relativePath)
         {
-            return excludes.Contains(relativePath) || excludes.Any(e => relativePath.StartsWith(e));
+            return _excludes.Contains(relativePath) || _excludes.Any(e => relativePath.StartsWith(e));
         }
 
         public bool IsIncludedPath(string relativePath)
         {
-            return includes.Contains(relativePath) || includes.Any(e => relativePath.StartsWith(e));
+            return _includes.Contains(relativePath) || _includes.Any(e => relativePath.StartsWith(e));
         }
 
         public bool CanBeIncluded(string relativePath)
         {
-            if (excludes.Count > 0 && IsExcludedPath(relativePath))
+            if (_excludes.Count > 0 && IsExcludedPath(relativePath))
             {
                 return false;
             }
 
-            if (includes.Count > 0 && IsIncludedPath(relativePath))
+            if (_includes.Count > 0 && IsIncludedPath(relativePath))
             {
                 return true;
             }
@@ -219,8 +219,8 @@ namespace Netyll.Logic.Templating.Context
         {
             try
             {
-                if (pageCache.ContainsKey(file))
-                    return pageCache[file];
+                if (_pageCache.ContainsKey(file))
+                    return _pageCache[file];
                 var content = SafeReadContents(file);
 
                 var relativePath = MapToOutputPath(context, file);
@@ -236,9 +236,9 @@ namespace Netyll.Logic.Templating.Context
                 var page = new Page
                 {
                     Title = header.ContainsKey("title") ? header["title"].ToString() : "this is a post",
-                    Date = header.ContainsKey("date") ? DateTime.Parse(header["date"].ToString()) : file.Datestamp(fileSystem),
+                    Date = header.ContainsKey("date") ? DateTime.Parse(header["date"].ToString()) : file.Datestamp(_fileSystem),
                     Content = content,
-                    Filepath = isPost ? GetPathWithTimestamp(context.OutputFolder, file) : GetFilePathForPage(context, file),
+                    Filepath = isPost ? GetPathWithTimestamp(context.OutputFolder.FullName, file) : GetFilePathForPage(context, file),
                     File = file,
                     Bag = header,
                 };
@@ -255,15 +255,15 @@ namespace Netyll.Logic.Templating.Context
                 // resolve permalink
                 if (header.ContainsKey("permalink"))
                 {
-                    page.Url = linkHelper.EvaluatePermalink(header["permalink"].ToString(), page);
+                    page.Url = _linkHelper.EvaluatePermalink(header["permalink"].ToString(), page);
                 }
                 else if (isPost && config.ContainsKey("permalink"))
                 {
-                    page.Url = linkHelper.EvaluatePermalink(config["permalink"].ToString(), page);
+                    page.Url = _linkHelper.EvaluatePermalink(config["permalink"].ToString(), page);
                 }
                 else
                 {
-                    page.Url = linkHelper.EvaluateLink(context, page);
+                    page.Url = _linkHelper.EvaluateLink(context, page);
                 }
 
                 // resolve id
@@ -273,7 +273,7 @@ namespace Netyll.Logic.Templating.Context
                 page.Bag["date"] = page.Date;
 
                 // The GetDirectoryPage method is reentrant, we need a cache to stop a stack overflow :)
-                pageCache.Add(file, page);
+                _pageCache.Add(file, page);
                 page.DirectoryPages = GetDirectoryPages(context, config, Path.GetDirectoryName(file), isPost).ToList();
 
                 return page;
@@ -292,8 +292,8 @@ namespace Netyll.Logic.Templating.Context
 
             if (!IsOnlyFrontmatterCategories(context))
             {
-                var postPath = page.File.Replace(context.SourceFolder, string.Empty);
-                string rawCategories = postPath.Replace(fileSystem.Path.GetFileName(page.File), string.Empty).Replace("_posts", string.Empty);
+                var postPath = page.File.Replace(context.SourceFolder.FullName, string.Empty);
+                string rawCategories = postPath.Replace(_fileSystem.Path.GetFileName(page.File), string.Empty).Replace("_posts", string.Empty);
                 categories.AddRange(rawCategories.Split(new[] { '/', '\\' }, StringSplitOptions.RemoveEmptyEntries));
             }
             if (header.ContainsKey("categories") && header["categories"] is IEnumerable<string>)
@@ -320,12 +320,12 @@ namespace Netyll.Logic.Templating.Context
 
         private string GetFilePathForPage(SiteContext context, string file)
         {
-            return Path.Combine(context.OutputFolder, MapToOutputPath(context, file));
+            return Path.Combine(context.OutputFolder.FullName, MapToOutputPath(context, file));
         }
 
         private IEnumerable<Page> GetDirectoryPages(SiteContext context, IConfiguration config, string forDirectory, bool isPost)
         {
-            return fileSystem
+            return _fileSystem
                 .Directory
                 .GetFiles(forDirectory, "*.*", SearchOption.TopDirectoryOnly)
                 .Select(file => CreatePage(context, config, file, isPost))
@@ -337,27 +337,27 @@ namespace Netyll.Logic.Templating.Context
             string postFirstLine;
             try
             {
-                using (var reader = fileSystem.File.OpenText(file))
+                using (var reader = _fileSystem.File.OpenText(file))
                 {
                     postFirstLine = reader.ReadLine();
                 }
             }
             catch (IOException)
             {
-                var fileInfo = fileSystem.FileInfo.FromFileName(file);
+                var fileInfo = _fileSystem.FileInfo.FromFileName(file);
                 var tempFile = Path.Combine(Path.GetTempPath(), fileInfo.Name);
                 try
                 {
                     fileInfo.CopyTo(tempFile, true);
-                    using (var streamReader = fileSystem.File.OpenText(tempFile))
+                    using (var streamReader = _fileSystem.File.OpenText(tempFile))
                     {
                         return streamReader.ReadLine();
                     }
                 }
                 finally
                 {
-                    if (fileSystem.File.Exists(tempFile))
-                        fileSystem.File.Delete(tempFile);
+                    if (_fileSystem.File.Exists(tempFile))
+                        _fileSystem.File.Delete(tempFile);
                 }
             }
             return postFirstLine;
@@ -367,21 +367,21 @@ namespace Netyll.Logic.Templating.Context
         {
             try
             {
-                return fileSystem.File.ReadAllText(file);
+                return _fileSystem.File.ReadAllText(file);
             }
             catch (IOException)
             {
-                var fileInfo = fileSystem.FileInfo.FromFileName(file);
+                var fileInfo = _fileSystem.FileInfo.FromFileName(file);
                 var tempFile = Path.Combine(Path.GetTempPath(), fileInfo.Name);
                 try
                 {
                     fileInfo.CopyTo(tempFile, true);
-                    return fileSystem.File.ReadAllText(tempFile);
+                    return _fileSystem.File.ReadAllText(tempFile);
                 }
                 finally
                 {
-                    if (fileSystem.File.Exists(tempFile))
-                        fileSystem.File.Delete(tempFile);
+                    if (_fileSystem.File.Exists(tempFile))
+                        _fileSystem.File.Delete(tempFile);
                 }
             }
         }
@@ -406,7 +406,7 @@ namespace Netyll.Logic.Templating.Context
 
         private string MapToOutputPath(SiteContext context, string file)
         {
-            return file.Replace(context.SourceFolder, "")
+            return file.Replace(context.SourceFolder.FullName, string.Empty)
                 .TrimStart(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
         }
 

@@ -2,7 +2,8 @@
     engine: liquid
 
 # Site settings
-author: # name of the author
-title: # site title
-url: # site url
-contact: # mail of the author
+author: "Site Author"
+title: "Site Title"
+#url: site url
+#contact: mail of the author
+permalink: "/:categories/:year/:month/:day/:title/"

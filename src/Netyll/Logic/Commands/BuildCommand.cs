@@ -19,14 +19,21 @@ namespace Netyll.Logic.Commands
             _fileSystem = fileSystem;
             _engine = siteEngine;
             _generator = generator;
+            SourcePath = _fileSystem.DirectoryInfo.FromDirectoryName(Environment.CurrentDirectory);
+            DestinationPath = _fileSystem.DirectoryInfo.FromDirectoryName(Path.Combine(Environment.CurrentDirectory, "_site"));
         }
 
-        public int Run(bool includeDrafts, bool cleanTarget)
-        {
-            var siteContext = _generator.BuildContext(Environment.CurrentDirectory, Path.Combine(Environment.CurrentDirectory, "_site"), includeDrafts);
+        public IDirectoryInfo SourcePath { get; set; }
+        public IDirectoryInfo DestinationPath { get; set; }
+        public bool IncludeDrafts { get; set; } = false;
+        public bool CleanDestination { get; set; } = true;
 
-            if (cleanTarget && _fileSystem.Directory.Exists(siteContext.OutputFolder))
-                _fileSystem.Directory.Delete(siteContext.OutputFolder);
+        public int Run()
+        {
+            var siteContext = _generator.BuildContext(SourcePath, DestinationPath, IncludeDrafts);
+
+            if (CleanDestination && siteContext.OutputFolder.Exists)
+                siteContext.OutputFolder.Delete(true);
 
             var watch = new Stopwatch();
             watch.Start();

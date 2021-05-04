@@ -9,16 +9,16 @@ namespace Netyll.Logic.Templating.Context
 {
     public class Data : Drop
     {
-        private readonly IFileSystem fileSystem;
-        private readonly string dataDirectory;
-        private readonly Dictionary<string, Lazy<object>> cachedResults = new Dictionary<string, Lazy<object>>();
-        private readonly IList<IDataParser> dataParsers;
+        private readonly IFileSystem _fileSystem;
+        private readonly IDirectoryInfo _dataDirectory;
+        private readonly Dictionary<string, Lazy<object>> _cachedResults = new Dictionary<string, Lazy<object>>();
+        private readonly IList<IDataParser> _dataParsers;
 
-        public Data(IFileSystem fileSystem, string dataDirectory)
+        public Data(IFileSystem fileSystem, IDirectoryInfo dataDirectory)
         {
-            this.fileSystem = fileSystem;
-            this.dataDirectory = dataDirectory;
-            dataParsers = new List<IDataParser>
+            _fileSystem = fileSystem;
+            _dataDirectory = dataDirectory;
+            _dataParsers = new List<IDataParser>
             {
                 new YamlJsonDataParser(fileSystem, "yml"),
                 new YamlJsonDataParser(fileSystem, "json"),
@@ -37,37 +37,37 @@ namespace Netyll.Logic.Templating.Context
                     return res;
                 }
 
-                if (!cachedResults.ContainsKey(method.ToString()))
+                if (!_cachedResults.ContainsKey(method.ToString()))
                 {
                     var cachedResult = new Lazy<object>(() =>
                     {
-                        if (!fileSystem.Directory.Exists(dataDirectory))
+                        if (!_fileSystem.Directory.Exists(_dataDirectory.FullName))
                         {
                             return null;
                         }
 
                         var methodName = method.ToString();
-                        foreach (var dataParser in dataParsers)
+                        foreach (var dataParser in _dataParsers)
                         {
-                            if (dataParser.CanParse(dataDirectory, methodName))
+                            if (dataParser.CanParse(_dataDirectory.FullName, methodName))
                             {
-                                return dataParser.Parse(dataDirectory, methodName);
+                                return dataParser.Parse(_dataDirectory.FullName, methodName);
                             }
                         }
 
-                        var subFolder = Path.Combine(dataDirectory, method.ToString());
-                        if (fileSystem.Directory.Exists(subFolder))
+                        var subFolder = Path.Combine(_dataDirectory.FullName, method.ToString());
+                        if (_fileSystem.Directory.Exists(subFolder))
                         {
-                            return new Data(fileSystem, subFolder);
+                            return new Data(_fileSystem, _fileSystem.DirectoryInfo.FromDirectoryName(subFolder));
                         }
 
                         return null;
                     });
-                    cachedResults[method.ToString()] = cachedResult;
+                    _cachedResults[method.ToString()] = cachedResult;
                     return cachedResult.Value;
                 }
 
-                return cachedResults[method.ToString()].Value;
+                return _cachedResults[method.ToString()].Value;
             }
         }
     }

@@ -15,26 +15,25 @@ namespace Netyll.Logic.Templating.Engines
     public abstract class EngineBase : ISiteEngine
     {
         private ILightweightMarkupEngine _lightweightMarkupEngine;
+        protected IFileSystem FileSystem { get; }
 
-        public EngineBase()
+        public EngineBase(ILightweightMarkupEngine lightweightMarkupEngine, IFileSystem fileSystem)
         {
             _lightweightMarkupEngine = new MarkdigMarkdownEngine();
+            FileSystem = fileSystem;
         }
 
         private static readonly Regex paragraphRegex = new Regex(@"(<(?:p|h\d{1})>.*?</(?:p|h\d{1})>)", RegexOptions.Compiled | RegexOptions.Singleline);
 
-        public IFileSystem FileSystem { get; set; }
-        
         public IEnumerable<IFilter> Filters { get; set; }
         public IEnumerable<ITag> Tags { get; set; }
         public IEnumerable<TagFactoryBase> TagFactories { get; set; }
         public IEnumerable<IContentTransform> ContentTransformers { get; set; }
 
         public ILightweightMarkupEngine LightweightMarkupEngine => _lightweightMarkupEngine;
-        protected SiteContext Context { get; private set; }
 
         public abstract void Initialize();
-        protected abstract void PreProcess();
+        //protected abstract void PreProcess();
         protected abstract string RenderTemplate(string content, PageContext pageData);
 
         public void Process(SiteContext context, bool skipFileOnError = false)
@@ -62,12 +61,12 @@ namespace Netyll.Logic.Templating.Engines
         private static Page GetNext(IList<Page> pages, int index) => index >= 1 ? pages[index - 1] : null;
         private static Page GetPrevious(IList<Page> pages, int index) => index < pages.Count - 1 ? pages[index + 1] : null;
 
-        private void ProcessFile(string outputDirectory, Page page, Page previous, Page next, bool skipFileOnError, string relativePath = "")
+        private void ProcessFile(IDirectoryInfo outputDirectory, Page page, Page previous, Page next, bool skipFileOnError, string relativePath = "")
         {
             if (string.IsNullOrWhiteSpace(relativePath))
                 relativePath = MapToOutputPath(page.File);
 
-            page.OutputFile = Path.Combine(outputDirectory, relativePath);
+            page.OutputFile = Path.Combine(outputDirectory.FullName, relativePath);
             var extension = Path.GetExtension(page.File);
 
             if (extension.IsImageFormat())
@@ -117,7 +116,7 @@ namespace Netyll.Logic.Templating.Engines
                     paginator = newPaginator;
                     prevLink = link;
 
-                    var path = Path.Combine(outputDirectory, link.ToRelativeFile());
+                    var path = Path.Combine(outputDirectory.FullName, link.ToRelativeFile());
                     if (path.EndsWith(FileSystem.Path.DirectorySeparatorChar.ToString()))
                     {
                         path = Path.Combine(path, "index.html");
@@ -278,24 +277,17 @@ namespace Netyll.Logic.Templating.Engines
 
         private string MapToOutputPath(string file)
         {
-            var temp = file.Replace(Context.SourceFolder, "")
+            var temp = file.Replace(Context.SourceFolder.FullName, string.Empty)
                 .TrimStart(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
 
             return temp;
-        }
-
-        public bool CanProcess(SiteContext context)
-        {
-            var engineInfo = GetType().GetCustomAttributes(typeof(SiteEngineInfoAttribute), true).SingleOrDefault() as SiteEngineInfoAttribute;
-            if (engineInfo == null) return false;
-            return context.Engine == engineInfo.Engine;
         }
 
         private string FindLayoutPath(string layout)
         {
             foreach (var extension in LayoutExtensions)
             {
-                var path = Path.Combine(Context.SourceFolder, "_layouts", layout + extension);
+                var path = Path.Combine(Context.SourceFolder.FullName, "_layouts", layout + extension);
                 if (FileSystem.File.Exists(path))
                     return path;
             }

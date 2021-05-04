@@ -8,7 +8,7 @@ namespace Netyll.Logic.Extensions
     {
         public static void CompressSitemap(this ISiteEngine engine, SiteContext siteContext, IFileSystem fileSystem)
         {
-            var sitemap = fileSystem.Path.Combine(siteContext.OutputFolder, @"sitemap.xml");
+            var sitemap = fileSystem.Path.Combine(siteContext.OutputFolder.FullName, @"sitemap.xml");
             var compressedSitemap = sitemap + ".gz";
 
             if (fileSystem.File.Exists(sitemap))

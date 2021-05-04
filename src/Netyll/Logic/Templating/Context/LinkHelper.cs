@@ -10,8 +10,13 @@ namespace Netyll.Logic.Templating.Context
 {
     public sealed class LinkHelper
     {
+        private static readonly Regex TimestampAndTitleFromPathRegex = new Regex($@"{Regex.Escape(Path.DirectorySeparatorChar.ToString())}(?:(?<timestamp>\d+-\d+-\d+)-)?(?<title>[^{0}]*)\.[^\.]+$", RegexOptions.Compiled);
+    
 
-        private static readonly Regex TimestampAndTitleFromPathRegex = new Regex(@$"{Regex.Escape(Path.DirectorySeparatorChar.ToString())}", RegexOptions.Compiled);
+        //private static readonly Regex TimestampAndTitleFromPathRegex = new Regex(
+        //   string.Format(@"{0}(?:(?<timestamp>\d+-\d+-\d+)-)?(?<title>[^{0}]*)\.[^\.]+$",
+        //       Regex.Escape(Path.DirectorySeparatorChar.ToString())),
+        //   RegexOptions.Compiled);
         private static readonly Regex CategoryRegex = new Regex(@":category(\d*)", RegexOptions.Compiled);
         private static readonly Regex SlashesRegex = new Regex(@"/{1,}", RegexOptions.Compiled);
         private static readonly string[] HtmlExtensions = new[] { ".markdown", ".mdown", ".mkdn", ".mkd", ".md", ".textile", ".cshtml" };
@@ -79,7 +84,7 @@ namespace Netyll.Logic.Templating.Context
         public string EvaluateLink(SiteContext context, Page page)
         {
             var directory = Path.GetDirectoryName(page.Filepath);
-            var relativePath = directory.Replace(context.OutputFolder, string.Empty);
+            var relativePath = directory.Replace(context.OutputFolder.FullName, string.Empty);
             var fileExtension = Path.GetExtension(page.Filepath);
 
             if (HtmlExtensions.Contains(fileExtension, StringComparer.InvariantCultureIgnoreCase))
@@ -96,7 +101,15 @@ namespace Netyll.Logic.Templating.Context
             return link;
         }
 
-        public string GetTitle(string file) => TimestampAndTitleFromPathRegex.Match(file).Groups["title"].Value;
+        public string GetTitle(string file)
+        {
+            var match = TimestampAndTitleFromPathRegex.Match(file);
+            var group = match.Groups["title"];
+            var value = group.Value;
+            return value;
+        } 
+
+
         private string GetPageTitle(string file) => Path.GetFileNameWithoutExtension(file);
 
         private string GetSlugFromFrontMatter(Page page)

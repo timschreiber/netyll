@@ -9,9 +9,9 @@ namespace Netyll.Logic.Templating.Engines
 
         public string Root { get; set; }
 
-        public Includes(string root, IFileSystem fileSystem)
+        public Includes(IDirectoryInfo root, IFileSystem fileSystem)
         {
-            Root = root;
+            Root = root.FullName;
             _fileSystem = fileSystem;
         }
 

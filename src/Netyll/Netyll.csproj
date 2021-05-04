@@ -6,6 +6,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Logic\Templating\Engines\EngineBase.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="Resources\25.png" />
     <None Remove="Resources\about.md" />
     <None Remove="Resources\atom.xml" />
