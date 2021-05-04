@@ -55,7 +55,7 @@ namespace Netyll
                         ? pathOption.Value()
                         : Environment.CurrentDirectory);
 
-                    return _serviceProvider.GetService<NewCommand>().Run();
+                    return newCommand.Run();
                 });
             });
 

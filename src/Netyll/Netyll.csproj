@@ -24,7 +24,7 @@
     <None Remove="Resources\_includes\head.html" />
     <None Remove="Resources\_layouts\layout.html" />
     <None Remove="Resources\_layouts\post.html" />
-    <None Remove="Resources\_posts\myfirstpost.md" />
+    <None Remove="Resources\_posts\my-first-post.md" />
   </ItemGroup>
 
   <ItemGroup>
@@ -42,7 +42,7 @@
     <EmbeddedResource Include="Resources\_includes\head.html" />
     <EmbeddedResource Include="Resources\_layouts\layout.html" />
     <EmbeddedResource Include="Resources\_layouts\post.html" />
-    <EmbeddedResource Include="Resources\_posts\myfirstpost.md" />
+    <EmbeddedResource Include="Resources\_posts\my-first-post.md" />
   </ItemGroup>
 
   <ItemGroup>

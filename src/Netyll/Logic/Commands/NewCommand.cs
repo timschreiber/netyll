@@ -33,7 +33,7 @@ namespace Netyll.Logic.Commands
             copyResource("Resources/_includes/head.html", BasePath);
             copyResource("Resources/_layouts/layout.html", BasePath);
             copyResource("Resources/_layouts/post.html", BasePath);
-            copyResource("Resources/_posts/myfirstpost.md", BasePath, $"{DateTime.Today:yyyy-MM-dd}-myfirstpost.md");
+            copyResource("Resources/_posts/my-first-post.md", BasePath, $"{DateTime.Today:yyyy-MM-dd}-my-first-post.md");
             copyResource("Resources/css/style.css", BasePath);
             copyResource("Resources/_config.yml", BasePath);
             copyResource("Resources/25.png", BasePath);
