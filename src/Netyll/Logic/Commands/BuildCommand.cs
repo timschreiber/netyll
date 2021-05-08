@@ -11,9 +11,6 @@ namespace Netyll.Logic.Commands
 {
     public class BuildCommand
     {
-        private static readonly string DEFAULT_SOURCE_PATH = Environment.CurrentDirectory;
-        private static readonly string DEFAULT_DESTINATION_PATH = Path.Combine(Environment.CurrentDirectory, "_site");
-
         private readonly IFileSystem _fileSystem;
         private readonly ISiteEngine _engine;
         private readonly SiteContextGenerator _generator;
@@ -23,8 +20,8 @@ namespace Netyll.Logic.Commands
             _fileSystem = fileSystem;
             _engine = siteEngine;
             _generator = generator;
-            SourcePath = _fileSystem.DirectoryInfo.FromDirectoryName(DEFAULT_SOURCE_PATH);
-            DestinationPath = _fileSystem.DirectoryInfo.FromDirectoryName(DEFAULT_DESTINATION_PATH);
+            SourcePath = _fileSystem.DirectoryInfo.FromDirectoryName(Constants.DEFAULT_SOURCE_PATH);
+            DestinationPath = _fileSystem.DirectoryInfo.FromDirectoryName(Constants.DEFAULT_DESTINATION_PATH);
         }
 
         public IDirectoryInfo SourcePath { get; set; }

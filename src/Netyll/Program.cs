@@ -93,6 +93,7 @@ namespace Netyll
                 cmd.Description = "Builds your site any time a source file changes and serves it locally.";
                 var sourcePathOption = cmd.Option("--source-path", "The path where the source site template is located (Default: %CD%).", CommandOptionType.SingleValue);
                 var destinationPathOption = cmd.Option("--destination-path", "The path where the generated site will be written (Default: %CD%\\_site).", CommandOptionType.SingleValue);
+                var portOption = cmd.Option("--port", "The port on which the web server will listen", CommandOptionType.SingleValue);
                 var includeDraftsOption = cmd.Option("--include-drafts", "Include draft pages and posts when building the site.", CommandOptionType.NoValue);
                 var cleanTargetOption = cmd.Option("--clean-target", "Clean the destination directory before building the site.", CommandOptionType.NoValue);
                 cmd.HelpOption("-?|-h|--help");
