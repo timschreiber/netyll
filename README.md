@@ -54,7 +54,7 @@ My primary intent for Netyll is to preview local changes to [Github Pages](https
 
 - Aligning the command names to their Jekyll counterparts,
 - Removal of Razor template engine,
-- Resolving other [Jekyll differences](https://github.com/Code52/pretzel/wiki/Jekyll-differences)(future).
+- Resolving other [Jekyll differences](https://github.com/Code52/pretzel/wiki/Jekyll-differences) (future).
 - Working toward 100% compatibility with Github Pages (future).
 
 The "Netyll" name evokes the project's relationship to .NET and Jekyll and is represented by the nettle leaf logo.
