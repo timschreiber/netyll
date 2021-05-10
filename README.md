@@ -1,8 +1,8 @@
 ## Netyll
 
-A simple, blog-aware, static website generation tool that is mostly compatible with [Jekyll](https://github.com/jekyll/jekyll) and aims to be completely compatible with [GitHub Pages](https://pages.github.com/). Unlike Jekyll, which does not officially support Windows, Netyll is built on the Microsoft .NET Core LTS release (currently 3.1) and does not require complicated Ruby installation and configuration to work on Windows.
+A simple, blog-aware, static website generation tool that is mostly compatible with [Jekyll](https://github.com/jekyll/jekyll) and aims maximum compatibility with [GitHub Pages](https://pages.github.com/). Unlike Jekyll, which does not officially support Windows, Netyll is built on the Microsoft .NET Core LTS release (currently 3.1) and does not require complicated Ruby installation and configuration to work on Windows.
 
-Netyll follows the same conventions as Jekyll and should be compatible with basic Jekyll websites. If you are not familiar with Jekyll, have a read at [http://jekyllrb.com/docs/usage/](http://jekyllrb.com/docs/usage/). Netyll is particularly useful for previewing local changes to GitHub Pages websites before commiting them to a repository for publication.
+Netyll follows the same conventions as Jekyll and should be compatible with basic Jekyll websites. If you are not familiar with Jekyll, have a read at [http://jekyllrb.com/docs/usage/](http://jekyllrb.com/docs/usage/).
 
 ### Usage
 
