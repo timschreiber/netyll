@@ -51,7 +51,7 @@ namespace Netyll.Logic.Commands
 
             _watcher.OnChange(SourcePath, DestinationPath, file => watcherOnChanged(file));
 
-            using (var w = new AspNetCoreWebHost(DestinationPath, Port))
+            using (var w = new AspNetCoreWebHost(DestinationPath, Port, debug: true))
             {
                 try
                 {

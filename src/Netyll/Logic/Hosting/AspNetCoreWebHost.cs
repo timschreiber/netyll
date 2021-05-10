@@ -3,10 +3,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.IO.Abstractions;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Netyll.Logic.Hosting
@@ -16,49 +14,74 @@ namespace Netyll.Logic.Hosting
         private IHost _host;
 
         public AspNetCoreWebHost(IDirectoryInfo basePath)
-            : this(basePath, 8080)
+            : this(basePath, 8080, true)
         { }
 
-        public AspNetCoreWebHost(IDirectoryInfo basePath, int port)
+        public AspNetCoreWebHost(IDirectoryInfo basePath, int port, bool debug)
         {
             IsRunning = false;
             BasePath = basePath == null ? Environment.CurrentDirectory : basePath.FullName;
             Port = port;
+            Debug = debug;
         }
 
         public bool IsRunning { get; private set; }
         public string BasePath { get; }
         public int Port { get; }
+        public bool Debug { get; }
 
         public async Task<bool> Start()
         {
             if (IsRunning)
                 return false;
 
+            using var configStream = new MemoryStream();
+            using var writer = new StreamWriter(configStream);
+            writer.Write(buildJsonConfig());
+            writer.Flush();
+            configStream.Position = 0;
+
             _host = Host.CreateDefaultBuilder()
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
-                    webBuilder.ConfigureLogging(logging => logging.AddConsole());
-                    webBuilder.UseWebRoot(BasePath);
-                    webBuilder.UseUrls($"http://localhost:{Port}");
+                    var config = new ConfigurationBuilder()
+                        .AddJsonStream(configStream)
+                        .Build();
+
+                    webBuilder
+                        .UseEnvironment(Debug ? "Debug" : "Production")
+                        .ConfigureLogging(logging =>
+                        {
+                            if (Debug)
+                            {
+                                logging.AddConsole();
+                                logging.AddDebug();
+                            }
+                        })
+                        .UseWebRoot(BasePath)
+                        .UseStartup<Startup>()
+                        .UseUrls($"http://localhost:{Port}")
+                        .UseConfiguration(config)
+                        .UseContentRoot(BasePath);
                 })
                 .Build();
 
             await _host.StartAsync();
             IsRunning = true;
+
+            await _host.WaitForShutdownAsync();
+
             return true;
         }
 
-        public async Task<bool> Stop()
+        private string buildJsonConfig()
         {
-            if (!IsRunning)
-                return false;
+            return $"{{ \"basePath\": \"{escapeBackslashes(BasePath)}\" }}";
+        }
 
-            await _host.StopAsync();
-            _host.Dispose();
-            _host = null;
-
-            return true;
+        private string escapeBackslashes(string value)
+        {
+            return value.Replace("\\", "\\\\");
         }
 
         public void Dispose()
