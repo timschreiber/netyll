@@ -2,9 +2,9 @@
 
 A simple static website generation tool that is mostly compatible with [Jekyll](https://github.com/jekyll/jekyll). Unlike Jekyll, which does not officially support Windows, Netyll is built on the Microsoft .NET Core LTS release (currently 3.1) and does not require complicated Ruby installation and configuration to work on Windows.
 
-Netyll follows the same conventions as Jekyll and should be compatible with basic Jekyll websites. If you are not familiar with Jekyll, have a read at [http://jekyllrb.com/docs/usage/](http://jekyllrb.com/docs/usage/).
+Netyll follows the same conventions as Jekyll and should be compatible with basic Jekyll websites. If you are not familiar with Jekyll, have a read at [http://jekyllrb.com/docs/usage/](http://jekyllrb.com/docs/usage/). Netyll is particularly useful for previewing local changes to GitHub Pages websites before commiting them to a repository for publication.
 
-Netyll started with the archived/abandoned Pretzel project from Code52. The name Netyll was chosen to evokes the project's relationship to .NET and Jekyll, and because it sounds like "nettle," we chose a nettle leaf as the logo.
+Netyll is heavily based on the archived/abandoned Pretzel project from Code52. The "Netyll" name evokes the project's relationship to .NET and Jekyll and is represented by the nettle leaf logo.
 
 ### Usage
 
@@ -36,11 +36,11 @@ To test a website from the current directory, and test on the default port (http
 
 To test a website from a specific source directory, with the output in a specific destination directory, using a specific port:
 
-    netyll serve --source-path c:\path\to\source --destination-path c:\path\to\destination --path 8080
+    netyll serve --source-path c:\path\to\source --destination-path c:\path\to\destination --port 8080
 
 To stop testing press CTRL-C in the terminal window.
 
-*More information will be forthcoming on the wiki*
+*More information will be forthcoming in the wiki*
 
 ### Plugins
 
