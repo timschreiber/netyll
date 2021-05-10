@@ -1,6 +1,6 @@
 ## Netyll
 
-A simple static website generation tool that is mostly compatible with [Jekyll](https://github.com/jekyll/jekyll). Unlike Jekyll, which does not officially support Windows, Netyll is built on the Microsoft .NET Core LTS release (currently 3.1) and does not require complicated Ruby installation and configuration to work on Windows.
+A simple, blog-aware, static website generation tool that is mostly compatible with [Jekyll](https://github.com/jekyll/jekyll) and aims to be completely compatible with [GitHub Pages](https://pages.github.com/). Unlike Jekyll, which does not officially support Windows, Netyll is built on the Microsoft .NET Core LTS release (currently 3.1) and does not require complicated Ruby installation and configuration to work on Windows.
 
 Netyll follows the same conventions as Jekyll and should be compatible with basic Jekyll websites. If you are not familiar with Jekyll, have a read at [http://jekyllrb.com/docs/usage/](http://jekyllrb.com/docs/usage/). Netyll is particularly useful for previewing local changes to GitHub Pages websites before commiting them to a repository for publication.
 
@@ -42,7 +42,7 @@ To stop testing press CTRL-C in the terminal window.
 
 ### Plugins
 
-Netyll will eventually support the same plugin features that [Github Pages](https://pages.github.com/) supports.
+Netyll will eventually support the same plugin features that Github Pages supports.
 
 ### Contributing
 
@@ -61,4 +61,5 @@ The "Netyll" name evokes the project's relationship to .NET and Jekyll and is re
 
 ### License
 
-Netyll is released under the terms of the [Microsoft Public License (MS-PL)](https://github.com/timschreiber/netyll/blob/main/LICENSE).
+Netyll: Copyright (c) 2021 Tim Schreiber, released under the terms of the [Microsoft Public License (MS-PL)](https://github.com/timschreiber/netyll/blob/main/LICENSE).
+Pretzel source code used in Netyll: Copyright (c) 2012-present Code52, released under the terms of the Microsoft Public License.
