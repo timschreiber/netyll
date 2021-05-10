@@ -28,7 +28,7 @@ To build a website from a specific source directory, with the output in a specif
 
 **Serve** is for testing a website locally. When a file is changed in the source directory, the website is automatically regenerated.
 
-To test a website from the current directory, and test on the default port (http://localhost:42069):
+To test a website from the current directory, and test on the default port (42069):
 
     netyll serve
 
@@ -54,7 +54,7 @@ My primary intent for Netyll is to preview local changes to [Github Pages](https
 
 - Aligning the command names to their Jekyll counterparts,
 - Removal of Razor template engine,
-- Working to resolve other [Jekyll differences](https://github.com/Code52/pretzel/wiki/Jekyll-differences),
-- Working toward 100% compatibility with Github Pages.
+- Resolving other [Jekyll differences](https://github.com/Code52/pretzel/wiki/Jekyll-differences)(future).
+- Working toward 100% compatibility with Github Pages (future).
 
 The "Netyll" name evokes the project's relationship to .NET and Jekyll and is represented by the nettle leaf logo.
