@@ -62,4 +62,5 @@ The "Netyll" name evokes the project's relationship to .NET and Jekyll and is re
 ### License
 
 Netyll: Copyright (c) 2021 Tim Schreiber, released under the terms of the [Microsoft Public License (MS-PL)](https://github.com/timschreiber/netyll/blob/main/LICENSE).
+
 Pretzel source code used in Netyll: Copyright (c) 2012-present Code52, released under the terms of the Microsoft Public License.
