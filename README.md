@@ -48,12 +48,13 @@ Plugins are not currently supported in Netyll, but will be soon.
 
 A Contribution policy will be created soon.
 
-## Intent & Lineage
+### Intent & Lineage
 
-My primary intent for Netyll is to preview local changes to Github Pages websites before committing to their repositories. Previously, I used [Pretzel](https://github.com/Code52/pretzel) from [Code52](https://github.com/Code52), but that project is now archived/abandoned. I used Pretzel as a starting point and am modifying it to better match my primary intent for Netyll. Some of the major modifications include:
+My primary intent for Netyll is to preview local changes to Github Pages websites before committing to their repositories. Previously, I used the now archived/abandoned [Pretzel](https://github.com/Code52/pretzel) project from [Code52](https://github.com/Code52). For Netyll, I used the broken Pretzel source code as a starting point and am modifying it to better match the primary intent for Netyll. Some of the major modifications include:
 
-- Using `Microsoft.Extensions.CommandLineUtils` to parse command line arguments and aligning the command names to their Jekyll counterparts,
-- Removal of Razor template engine
+- Using `Microsoft.Extensions.CommandLineUtils` to parse command line arguments,
+- Aligning the command names to their Jekyll counterparts,
+- Removal of Razor template engine,
 - Resolving other [Jekyll differences](https://github.com/Code52/pretzel/wiki/Jekyll-differences).
 
 The "Netyll" name evokes the project's relationship to .NET and Jekyll and is represented by the nettle leaf logo.
