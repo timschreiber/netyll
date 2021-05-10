@@ -58,3 +58,7 @@ My primary intent for Netyll is to preview local changes to GitHub Pages website
 - Working toward 100% compatibility with Github Pages (future).
 
 The "Netyll" name evokes the project's relationship to .NET and Jekyll and is represented by the nettle leaf logo.
+
+### License
+
+Netyll is released under the terms of the [Microsoft Public License (MS-PL)](https://github.com/timschreiber/netyll/blob/main/LICENSE).
