@@ -49,7 +49,7 @@ namespace Netyll
             app.Command("new", cmd =>
             {
                 cmd.Description = "Creates a new blank Netyll site template.";
-                var pathOption = cmd.Option("--path", "The path where the site template will be created (Default: %CD%).", CommandOptionType.SingleValue);
+                var pathOption = cmd.Option("--source-path", "The path where the site template will be created (Default: %CD%).", CommandOptionType.SingleValue);
                 cmd.HelpOption("-?|-h|--help");
                 cmd.OnExecute(() =>
                 {
