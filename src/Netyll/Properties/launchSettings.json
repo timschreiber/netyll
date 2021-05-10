@@ -2,7 +2,7 @@
   "profiles": {
     "Netyll": {
       "commandName": "Project",
-      "commandLineArgs": "build --source-path C:\\temp\\netyll --clean-target"
+      "commandLineArgs": "serve --source-path C:\\temp\\netyll --port 8080 --clean-target"
     }
   }
 }

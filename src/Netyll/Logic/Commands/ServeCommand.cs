@@ -26,6 +26,9 @@ namespace Netyll.Logic.Commands
             _watcher = watcher;
             SourcePath = _fileSystem.DirectoryInfo.FromDirectoryName(Constants.DEFAULT_SOURCE_PATH);
             DestinationPath = _fileSystem.DirectoryInfo.FromDirectoryName(Constants.DEFAULT_DESTINATION_PATH);
+            IncludeDrafts = false;
+            CleanDestination = true;
+            Port = 42069;
         }
 
         public IDirectoryInfo SourcePath { get; set; }

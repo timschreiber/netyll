@@ -5,6 +5,7 @@ using Microsoft.Extensions.CommandLineUtils;
 using Microsoft.Extensions.DependencyInjection;
 using Netyll.Logic.Commands;
 using Netyll.Logic.Extensibility;
+using Netyll.Logic.Modules;
 using Netyll.Logic.Templating.Context;
 using Netyll.Logic.Templating.Engines;
 
@@ -12,6 +13,7 @@ namespace Netyll
 {
     public class Program
     {
+        const int DEFAULT_PORT = 42069;
         static IServiceProvider _serviceProvider;
 
         static Program()
@@ -27,6 +29,7 @@ namespace Netyll
             services.AddTransient<SiteContextGenerator>();
             services.AddTransient<LinkHelper>();
             services.AddTransient<Logic.IConfiguration, Logic.Configuration>();
+            services.AddTransient<Logic.Modules.IFileSystemWatcher, SimpleFileSystemWatcher>();
             _serviceProvider = services.BuildServiceProvider();
         }
 
@@ -97,7 +100,29 @@ namespace Netyll
                 var includeDraftsOption = cmd.Option("--include-drafts", "Include draft pages and posts when building the site.", CommandOptionType.NoValue);
                 var cleanTargetOption = cmd.Option("--clean-target", "Clean the destination directory before building the site.", CommandOptionType.NoValue);
                 cmd.HelpOption("-?|-h|--help");
-                cmd.OnExecute(_serviceProvider.GetService<ServeCommand>().Run);
+                cmd.OnExecute(() =>
+                {
+                    var serveCommand = _serviceProvider.GetService<ServeCommand>();
+
+                    var sourcePath = sourcePathOption.HasValue()
+                        ? sourcePathOption.Value()
+                        : Environment.CurrentDirectory;
+
+                    serveCommand.SourcePath = _fileSystem.DirectoryInfo.FromDirectoryName(sourcePath);
+
+                    serveCommand.DestinationPath = _fileSystem.DirectoryInfo.FromDirectoryName(destinationPathOption.HasValue()
+                        ? destinationPathOption.Value()
+                        : Path.Combine(sourcePath, "_site"));
+
+                    serveCommand.Port = portOption.HasValue() && int.TryParse(portOption.Value(), out int port)
+                        ? port
+                        : DEFAULT_PORT;
+
+                    serveCommand.IncludeDrafts = includeDraftsOption != null && includeDraftsOption.HasValue();
+                    serveCommand.CleanDestination = cleanTargetOption != null && cleanTargetOption.HasValue();
+
+                    return serveCommand.Run();
+                });
             });
 
             app.Command("clean", cmd =>

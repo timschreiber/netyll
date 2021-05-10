@@ -25,6 +25,8 @@ namespace Netyll.Logic.Modules
 
         public void OnChange(IDirectoryInfo sourcePath, IDirectoryInfo destinationPath, Action<string> fileChangedCallback)
         {
+            _callback = fileChangedCallback;
+
             _destinationPath = destinationPath.FullName;
             _watcher.Path = sourcePath.FullName;
             _watcher.Filter = "*.*";
@@ -36,18 +38,25 @@ namespace Netyll.Logic.Modules
 
         private void watcherOnChanged(object sender, FileSystemEventArgs args)
         {
-            if (args.FullPath.Contains(_destinationPath))
-                return;
-
-            if(args.FullPath == _lastFile)
+            try
             {
-                _lastFile = "";
-                return;
+                _watcher.EnableRaisingEvents = false;
+                if (args.FullPath.Contains(_destinationPath))
+                    return;
+                if(args.FullPath == _lastFile)
+                {
+                    _lastFile = string.Empty;
+                    return;
+                }
+
+                _callback(args.FullPath);
+
+                _lastFile = args.FullPath;
             }
-
-            _callback(args.FullPath);
-
-            _lastFile = args.FullPath;
+            finally
+            {
+                _watcher.EnableRaisingEvents = true;
+            }
         }
     }
 }
