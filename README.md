@@ -4,7 +4,7 @@ A simple static website generation tool that is mostly compatible with [Jekyll](
 
 Netyll follows the same conventions as Jekyll and should be compatible with basic Jekyll websites. If you are not familiar with Jekyll, have a read at [http://jekyllrb.com/docs/usage/](http://jekyllrb.com/docs/usage/). Netyll is particularly useful for previewing local changes to GitHub Pages websites before commiting them to a repository for publication.
 
-Netyll is heavily based on the archived/abandoned Pretzel project from Code52. The "Netyll" name evokes the project's relationship to .NET and Jekyll and is represented by the nettle leaf logo.
+Netyll is heavily based on the archived/abandoned [Pretzel](https://github.com/Code52/pretzel) project from [Code52](https://github.com/Code52). The "Netyll" name evokes the project's relationship to .NET and Jekyll and is represented by the nettle leaf logo.
 
 ### Usage
 
