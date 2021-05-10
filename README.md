@@ -42,7 +42,7 @@ To stop testing press CTRL-C in the terminal window.
 
 ### Plugins
 
-Plugins are not currently supported in Netyll, but will be soon.
+Netyll will eventually support the same plugin features that [Github Pages](https://pages.github.com/) supports.
 
 ### Contributing
 
@@ -50,7 +50,7 @@ A Contribution policy will be created soon.
 
 ### Intent & Lineage
 
-My primary intent for Netyll is to preview local changes to [Github Pages](https://pages.github.com/) websites before committing to their repositories. Previously, I used the now archived/abandoned [Pretzel](https://github.com/Code52/pretzel) project from [Code52](https://github.com/Code52). For Netyll, I started with the broken Pretzel source code and am modifying it to better match the primary intent of Netyll. Some of the major modifications include:
+My primary intent for Netyll is to preview local changes to GitHub Pages websites before committing to their repositories. Previously, I used the now archived/abandoned [Pretzel](https://github.com/Code52/pretzel) project from [Code52](https://github.com/Code52). For Netyll, I started with the broken Pretzel source code and am modifying it to better match the primary intent of Netyll. Some of the major modifications include:
 
 - Aligning the command names to their Jekyll counterparts,
 - Removal of Razor template engine,
