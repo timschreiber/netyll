@@ -1,6 +1,5 @@
-﻿# Site settings
-author: "Site Author"
-title: "Blank Netyll Template"
-#url: site url
-#contact: mail of the author
+name: "Netyll"
+baseurl: "http://netyll.timschreiber.com"
 permalink: "/:categories/:year/:month/:day/:title/"
+title: "Netyll"
+author: "Site Author"
