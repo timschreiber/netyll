@@ -351,3 +351,8 @@ MigrationBackup/
 
 # Exclude launchSettings.json
 launchSettings.json
+
+# Generated Netyll Site
+_site
+/_site/
+_site/
