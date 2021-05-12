@@ -350,9 +350,9 @@ MigrationBackup/
 .ionide/
 
 # Exclude launchSettings.json
-launchSettings.json
+**/launchSettings.json
 
-# Generated Netyll Site
+# Exclude generated Netyll site
 _site
 /_site/
 _site/
