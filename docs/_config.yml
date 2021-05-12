@@ -1,0 +1,6 @@
+﻿# Site settings
+author: "Site Author"
+title: "Blank Netyll Template"
+#url: site url
+#contact: mail of the author
+permalink: "/:categories/:year/:month/:day/:title/"
