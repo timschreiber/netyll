@@ -4,3 +4,6 @@ body {
 nav {
   box-shadow: 0 4px 2px -2px gray;
 }
+a.navbar-brand > img {
+	height:60px;
+}
