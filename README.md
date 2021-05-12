@@ -1,3 +1,5 @@
+![Netyll Leaf Logo](./netyll-logo-250x102.png)
+
 ## Netyll
 
 A simple, blog-aware, static website generation tool that is mostly compatible with [Jekyll](https://github.com/jekyll/jekyll) and aims maximum compatibility with [GitHub Pages](https://pages.github.com/). Unlike Jekyll, which does not officially support Windows, Netyll is built on the Microsoft .NET Core LTS release (currently 3.1) and does not require complicated Ruby installation and configuration to work on Windows.
