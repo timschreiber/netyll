@@ -1,1 +1,2 @@
-theme: jekyll-theme-slate
+name: netyll
+permalink: /:categories/:year/:month/:day/:title/
