@@ -1,6 +1,7 @@
 ---
 layout : layout
 title : "Netyll"
+active: "home"
 ---
 <div class="jumbotron bg-success">
 	<h1 class="display-4 text-white">Easily develop and test Jekyll and GitHub Pages websites on Windows</h1>

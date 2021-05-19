@@ -64,7 +64,7 @@ namespace Netyll.Logic.Templating.Engines
                 var post = context.Posts[i];
                 var previousPost = getPrevious(context.Posts, i);
                 var nextPost = getNext(context.Posts, i);
-                ProcessFile(context.OutputFolder, post, previousPost, nextPost, skipFileOnError, post.Filepath);
+                processFile(context.OutputFolder, post, previousPost, nextPost, skipFileOnError, post.Filepath);
             }
 
             for (var i = 0; i < context.Pages.Count; i++)
@@ -72,7 +72,7 @@ namespace Netyll.Logic.Templating.Engines
                 var page = context.Pages[i];
                 var previousPage = getPrevious(context.Pages, i);
                 var nextPage = getNext(context.Pages, i);
-                ProcessFile(context.OutputFolder, page, previousPage, nextPage, skipFileOnError);
+                processFile(context.OutputFolder, page, previousPage, nextPage, skipFileOnError);
             }
         }
 
@@ -201,7 +201,7 @@ namespace Netyll.Logic.Templating.Engines
             return html;
         }
 
-        private static string GetContentExcerpt(string content, string excerptSeparator)
+        private static string getContextExcerpt(string content, string excerptSeparator)
         {
             var excerptSeparatorIndex = content.IndexOf(excerptSeparator, StringComparison.InvariantCulture);
             string excerpt = null;
@@ -224,7 +224,7 @@ namespace Netyll.Logic.Templating.Engines
             return excerpt;
         }
 
-        private string FindLayoutPath(string layout)
+        private string findLayoutPath(string layout)
         {
             foreach (var extension in _layoutExtensions)
             {
@@ -236,9 +236,21 @@ namespace Netyll.Logic.Templating.Engines
             return null;
         }
 
+        private string getFileContents(string path)
+        {
+            using var fs = _fileSystem.File.Open(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+            using var sr = new StreamReader(fs);
+            var result = sr.ReadToEnd();
+            fs.Close();
+            return result;
+        }
+
         private IDictionary<string, object> processTemplate(PageContext pageContext, string path)
         {
-            var templateFile = _fileSystem.File.ReadAllText(path);
+            var templateFile = getFileContents(path);
+
+            //var templateFile = _fileSystem.File.ReadAllText(path);
+
             var metadata = templateFile.YamlHeader();
             var templateContent = templateFile.ExcludeHeader();
 
@@ -247,7 +259,7 @@ namespace Netyll.Logic.Templating.Engines
             return metadata;
         }
 
-        private void ProcessFile(IDirectoryInfo outputDirectory, Page page, Page previous, Page next, bool skipFileOnError, string relativePath = "")
+        private void processFile(IDirectoryInfo outputDirectory, Page page, Page previous, Page next, bool skipFileOnError, string relativePath = "")
         {
             if (string.IsNullOrWhiteSpace(relativePath))
                 relativePath = mapToOutputPath(page.File);
@@ -255,19 +267,19 @@ namespace Netyll.Logic.Templating.Engines
             page.OutputFile = Path.Combine(outputDirectory.FullName, relativePath);
             var extension = Path.GetExtension(page.File);
 
-            if (extension.IsImageFormat())
+            if (extension.IsImageFormat() || page is NonProcessedPage)
             {
                 createOutputDirectory(page.OutputFile);
                 copyFileIfSourceNewer(page.File, page.OutputFile, true);
                 return;
             }
 
-            if (page is NonProcessedPage)
-            {
-                createOutputDirectory(page.OutputFile);
-                copyFileIfSourceNewer(page.File, page.OutputFile, true);
-                return;
-            }
+            //if (page is NonProcessedPage)
+            //{
+            //    createOutputDirectory(page.OutputFile);
+            //    copyFileIfSourceNewer(page.File, page.OutputFile, true);
+            //    return;
+            //}
 
             if (extension.IsMarkdownFile())
             {
@@ -325,7 +337,7 @@ namespace Netyll.Logic.Templating.Engines
                 {
                     context.Content = renderContent(page.File, renderTemplate(context.Content, context));
                     context.FullContent = context.Content;
-                    context.Bag["excerpt"] = GetContentExcerpt(context.Content, excerptSeparator);
+                    context.Bag["excerpt"] = getContextExcerpt(context.Content, excerptSeparator);
                 }
                 catch (Exception ex)
                 {
@@ -345,7 +357,7 @@ namespace Netyll.Logic.Templating.Engines
                     if ((string)layout == "nil" || layout == null)
                         break;
 
-                    var path = FindLayoutPath(layout.ToString());
+                    var path = findLayoutPath(layout.ToString());
 
                     if (path == null)
                         break;
@@ -373,7 +385,16 @@ namespace Netyll.Logic.Templating.Engines
                 }
 
                 createOutputDirectory(context.OutputPath);
-                _fileSystem.File.WriteAllText(context.OutputPath, context.FullContent);
+
+                using(var fs = _fileSystem.File.Open(context.OutputPath, FileMode.OpenOrCreate, FileAccess.Write, FileShare.Read))
+                using(var sw = new StreamWriter(fs))
+                {
+                    fs.SetLength(0);
+                    sw.Write(context.FullContent);
+                    sw.Close();
+                    fs.Close();
+                }
+                //_fileSystem.File.WriteAllText(context.OutputPath, context.FullContent);
             }
         }
     }

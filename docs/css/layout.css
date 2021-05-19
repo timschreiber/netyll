@@ -1,9 +1,27 @@
 body {
   margin-top: 77px;
 }
-nav {
+nav.navbar {
   box-shadow: 0 4px 2px -2px gray;
 }
 a.navbar-brand > img {
 	height:50px;
+}
+ul.list-group.sections > li.list-group-item {
+	text-transform: uppercase;
+	padding-left:0.67rem;;
+}
+.list-group-item.active {
+	font-weight:bold;
+}
+.list-group-item.active a {
+	color:#fff;
+}
+.list-group-compact > li {
+	padding-top:0.5rem;
+	padding-bottom:0.5rem;
+}
+pre {
+	padding:0.5rem;
+	background-color:#e2e3e5;
 }

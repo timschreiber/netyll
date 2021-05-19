@@ -16,13 +16,13 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarsExampleDefault">
           <ul class="navbar-nav mr-auto">
-            <li class="nav-item">
+            <li class="nav-item {% if page.active == 'home' or layout.active == 'home' %}active{% endif %}">
               <a class="nav-link" href="/">Home</a>
             </li>
-            <li class="nav-item">
+            <li class="nav-item {% if page.active == 'docs' or layout.active == 'docs' %}active{% endif %}">
               <a class="nav-link" href="/docs">Docs</a>
             </li>
-			<li class="nav-item">
+			<li class="nav-item {% if page.active == 'news' or layout.active == 'news' %}active{% endif %}">
 			  <a class="nav-link" href="/news">News</a>
 			</li>
           </ul>
@@ -44,7 +44,7 @@
 					<p>The contents of this website are &copy; {{ "now" | date: "%Y" }} under the terms of the <a href="https://github.com/timschreiber/netyll/blob/main/LICENSE" target="_blank" class="text-white">Microsoft Public License (MS-PL)</a>.</p>
 				</div>
 				<div class="col-12 col-lg-4">
-					<p class="text-right">Hosted by <strong><a href="https://github.com" target="_blank" class="text-white">GitHub</a></strong></p>
+					<p class="text-right">Hosted by <strong style="font-weight:900;"><a href="https://github.com" target="_blank" class="text-white">GitHub</a></strong></p>
 				</div>
 			</div>
 		</div>
