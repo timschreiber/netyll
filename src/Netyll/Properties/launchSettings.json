@@ -2,7 +2,7 @@
   "profiles": {
     "Netyll": {
       "commandName": "Project",
-      "commandLineArgs": "serve --source-path C:\\Users\\timsc\\source\\repos\\netyll\\docs"
+      "commandLineArgs": "serve --source-path C:\\Users\\timsc\\source\\repos\\timschreiber.github.com"
     }
   }
 }
